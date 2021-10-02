@@ -7,12 +7,19 @@ import Post from "../models/Post";
 const routes = express.Router();
 
 routes.get("/shoutouts", async (req, res) => {
+  const name: string = req.query.name as string;
+  let query: any = {};
+
+  if (name) {
+    query = { title: name };
+  }
+
   try {
     const client = await getClient();
     const results = await client
       .db()
       .collection<Post>("shoutOuts")
-      .find()
+      .find(query)
       .toArray();
     res.json(results);
   } catch (err) {
