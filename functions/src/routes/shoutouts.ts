@@ -1,5 +1,5 @@
 import express from "express";
-//import { ObjectId } from 'mongodb';
+import { ObjectId } from "mongodb";
 import { getClient } from "../db";
 import Post from "../models/Post";
 
@@ -41,6 +41,26 @@ routes.post("/shoutouts", async (req, res) => {
     res.json(post);
   } catch (err) {
     console.error("ERROR", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// delete a shoutout/post
+routes.delete("/shoutouts/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const client = await getClient();
+    const result = await client
+      .db()
+      .collection<Post>("shoutOuts")
+      .deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 0) {
+      res.status(404).json({ message: "Not Found" });
+    } else {
+      res.status(204).end();
+    }
+  } catch (err) {
+    console.error("FAIL", err);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
