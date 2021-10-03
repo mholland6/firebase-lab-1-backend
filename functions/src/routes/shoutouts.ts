@@ -29,6 +29,7 @@ routes.get("/shoutouts", async (req, res) => {
 });
 
 routes.post("/shoutouts", async (req, res) => {
+  console.log("this is the route");
   const post: Post = req.body;
   try {
     const client = await getClient();
